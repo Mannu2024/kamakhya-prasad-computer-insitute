@@ -1,0 +1,154 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model AdminUser {
+  id        String     @id @default(cuid())
+  email     String     @unique
+  password  String
+  name      String
+  role      String     @default("STAFF")
+  createdAt DateTime   @default(now())
+  auditLogs AuditLog[]
+}
+
+model Student {
+  id                     String       @id @default(cuid())
+  rollNumber             String       @unique
+  name                   String
+  fatherName             String?
+  motherName             String?
+  dob                    DateTime?
+  phone                  String?
+  email                  String?
+  address                String?
+  photoUrl               String?
+  courseId               String
+  course                 Course       @relation(fields: [courseId], references: [id])
+  batchId                String?
+  batch                  Batch?       @relation(fields: [batchId], references: [id])
+  enrollmentDate         DateTime     @default(now())
+  status                 String       @default("ACTIVE")
+  verificationEnabled    Boolean      @default(true)
+  isVerified             Boolean      @default(false)
+  isBlocked              Boolean      @default(false)
+  requireVerificationKey Boolean      @default(false)
+  totalFees              Float        @default(0)
+  payments               Payment[]
+  attendances            Attendance[]
+  certificate            Certificate?
+  createdAt              DateTime     @default(now())
+  updatedAt              DateTime     @updatedAt
+}
+
+model Course {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  category    String
+  duration    String
+  fees        Float
+  syllabus    String?
+  eligibility String?
+  description String?
+  isActive    Boolean   @default(true)
+  students    Student[]
+  batches     Batch[]
+  createdAt   DateTime  @default(now())
+}
+
+model Batch {
+  id        String    @id @default(cuid())
+  courseId  String
+  course    Course    @relation(fields: [courseId], references: [id])
+  name      String
+  startDate DateTime?
+  endDate   DateTime?
+  timing    String?
+  capacity  Int?
+  students  Student[]
+  createdAt DateTime  @default(now())
+}
+
+model Payment {
+  id             String   @id @default(cuid())
+  studentId      String
+  student        Student  @relation(fields: [studentId], references: [id])
+  amount         Float
+  date           DateTime @default(now())
+  mode           String   @default("CASH")
+  transactionRef String?
+  receiptUrl     String?
+  createdAt      DateTime @default(now())
+}
+
+model Attendance {
+  id        String   @id @default(cuid())
+  studentId String
+  student   Student  @relation(fields: [studentId], references: [id])
+  date      DateTime
+  status    String   @default("PRESENT")
+}
+
+model Certificate {
+  id                String    @id @default(cuid())
+  studentId         String    @unique
+  student           Student   @relation(fields: [studentId], references: [id])
+  certificateNumber String?
+  issueDate         DateTime?
+  fileUrl           String?
+  isIssued          Boolean   @default(false)
+  createdAt         DateTime  @default(now())
+}
+
+model AuditLog {
+  id          String    @id @default(cuid())
+  adminUserId String
+  admin       AdminUser @relation(fields: [adminUserId], references: [id])
+  action      String
+  entityType  String
+  entityId    String?
+  details     String?
+  createdAt   DateTime  @default(now())
+}
+
+model SiteContent {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+model Testimonial {
+  id          String   @id @default(cuid())
+  studentName String
+  course      String?
+  message     String
+  photoUrl    String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}
+
+model GalleryImage {
+  id        String   @id @default(cuid())
+  url       String
+  caption   String?
+  category  String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model Enquiry {
+  id        String   @id @default(cuid())
+  name      String
+  phone     String
+  course    String?
+  message   String?
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
