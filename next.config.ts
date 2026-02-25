@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  serverExternalPackages: ['bcryptjs'],
+  serverExternalPackages: ['bcryptjs', '@react-pdf/renderer'],
 }
 
 export default nextConfig

@@ -1,0 +1,9 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Netlify automatically installs @netlify/plugin-nextjs for Next.js projects.
+# No additional plugin configuration is required.
