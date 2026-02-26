@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { Image as ImageIcon } from 'lucide-react'
+import GalleryGrid from './GalleryGrid'
 
 async function getGalleryImages() {
   try {
@@ -33,25 +34,7 @@ export default async function GalleryPage() {
               <p className="text-gray-400">Photos of our institute, students, and events will be added here.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {images.map((image) => (
-                <div
-                  key={image.id}
-                  className="relative aspect-square overflow-hidden rounded-lg bg-gray-100 hover:opacity-90 transition-opacity cursor-pointer"
-                >
-                  <img
-                    src={image.url}
-                    alt={image.caption || 'Gallery image'}
-                    className="w-full h-full object-cover"
-                  />
-                  {image.caption && (
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3">
-                      <p className="text-white text-xs">{image.caption}</p>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
+            <GalleryGrid images={images} categories={categories} />
           )}
         </div>
       </section>
